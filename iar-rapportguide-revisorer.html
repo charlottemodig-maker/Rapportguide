@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IAR — Guide: Skapa revisionsrapport</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --pt-navy: #1a2e4a;
+    --pt-blue: #2563a8;
+    --pt-teal: #0f766e;
+    --pt-teal-light: #ccfbf1;
+    --pt-purple: #6d28d9;
+    --pt-purple-light: #ede9fe;
+    --pt-green: #15803d;
+    --pt-green-light: #dcfce7;
+    --pt-gray: #f8f7f5;
+    --pt-border: #e5e3dd;
+    --pt-text: #1a1a18;
+    --pt-muted: #6b6b67;
+    --radius: 10px;
+  }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--pt-gray); color: var(--pt-text); min-height: 100vh; padding: 0 0 60px; }
+  header { background: var(--pt-navy); color: #fff; padding: 28px 32px 24px; }
+  header .org { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.55; margin-bottom: 6px; }
+  header h1 { font-size: 22px; font-weight: 600; line-height: 1.3; }
+  header p { font-size: 14px; opacity: 0.7; margin-top: 6px; }
+
+  .progress-bar { background: #fff; border-bottom: 1px solid var(--pt-border); padding: 14px 32px; display: flex; align-items: center; gap: 8px; overflow-x: auto; white-space: nowrap; }
+  .prog-dot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; border: 2px solid var(--pt-border); background: #fff; color: var(--pt-muted); flex-shrink: 0; cursor: pointer; transition: all 0.2s; }
+  .prog-dot.done { background: var(--pt-green); border-color: var(--pt-green); color: #fff; }
+  .prog-dot.active { background: var(--pt-blue); border-color: var(--pt-blue); color: #fff; }
+  .prog-line { flex: 1; height: 2px; background: var(--pt-border); min-width: 12px; flex-shrink: 0; }
+  .prog-line.done { background: var(--pt-green); }
+
+  main { max-width: 680px; margin: 0 auto; padding: 28px 20px 0; }
+
+  .zone-header { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin: 24px 0 10px; padding: 6px 12px; border-radius: 6px; display: inline-block; }
+  .zone-app    { background: var(--pt-teal-light); color: var(--pt-teal); }
+  .zone-agent  { background: var(--pt-purple-light); color: var(--pt-purple); }
+  .zone-mail   { background: var(--pt-green-light); color: var(--pt-green); }
+
+  .step-card { background: #fff; border: 1px solid var(--pt-border); border-radius: var(--radius); margin-bottom: 12px; overflow: hidden; }
+  .step-card.done-card { opacity: 0.5; }
+
+  .step-header { display: flex; align-items: center; gap: 14px; padding: 18px 20px 14px; }
+  .step-num { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; flex-shrink: 0; }
+  .step-title { font-size: 16px; font-weight: 600; flex: 1; }
+  .step-subtitle { font-size: 13px; color: var(--pt-muted); margin-top: 2px; }
+
+  .step-body { padding: 0 20px 4px 70px; }
+  .step-body p { font-size: 14px; line-height: 1.7; color: #333; margin-bottom: 12px; }
+
+  .action-box { border-radius: 8px; padding: 14px 16px; margin: 14px 0; }
+  .action-box .alabel { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+  .btn-sim { font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; background: #fff; border: 1.5px solid currentColor; border-radius: 7px; padding: 8px 16px; }
+
+  .tip { background: #fffbeb; border-left: 3px solid #f59e0b; border-radius: 0 6px 6px 0; padding: 10px 14px; font-size: 13px; color: #78350f; margin: 12px 0; }
+  .tip strong { font-weight: 600; }
+
+  .nav-row { display: flex; gap: 10px; margin-top: 16px; padding: 0 20px 20px 70px; }
+  .btn-next { background: var(--pt-blue); color: #fff; border: none; border-radius: 8px; padding: 11px 24px; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .btn-next:hover { background: #1d4ed8; }
+  .btn-done { background: var(--pt-green); color: #fff; border: none; border-radius: 8px; padding: 11px 24px; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .btn-back { background: #fff; color: var(--pt-muted); border: 1px solid var(--pt-border); border-radius: 8px; padding: 11px 20px; font-size: 14px; cursor: pointer; }
+
+  .done-banner { display: none; background: var(--pt-green); color: #fff; border-radius: var(--radius); padding: 28px 24px; text-align: center; margin-bottom: 20px; }
+  .done-banner h2 { font-size: 20px; font-weight: 600; margin-bottom: 6px; }
+  .done-banner p { font-size: 14px; opacity: 0.85; }
+  .btn-reset { background: rgba(255,255,255,0.2); color: #fff; border: 1px solid rgba(255,255,255,0.4); border-radius: 8px; padding: 9px 20px; font-size: 14px; cursor: pointer; margin-top: 14px; }
+
+  .z-app .step-num    { background: var(--pt-teal-light); color: var(--pt-teal); }
+  .z-app .action-box  { background: var(--pt-teal-light); color: var(--pt-teal); }
+  .z-agent .step-num  { background: var(--pt-purple-light); color: var(--pt-purple); }
+  .z-agent .action-box{ background: var(--pt-purple-light); color: var(--pt-purple); }
+  .z-mail .step-num   { background: var(--pt-green-light); color: var(--pt-green); }
+  .z-mail .action-box { background: var(--pt-green-light); color: var(--pt-green); }
+
+  .optional-badge { display: inline-block; background: #f1f5f9; color: #64748b; font-size: 11px; font-weight: 600; padding: 2px 10px; border-radius: 10px; margin-left: 8px; vertical-align: middle; }
+
+  @media (max-width: 500px) {
+    .step-body, .nav-row { padding-left: 20px; }
+    header { padding: 20px 16px; }
+    .progress-bar { padding: 12px 16px; }
+    main { padding: 16px 12px 0; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="org">Praktikertjänst — IAR</div>
+  <h1>Skapa revisionsrapport till verksamheten</h1>
+  <p>Guide för revisorer — följ stegen i ordning</p>
+</header>
+
+<div class="progress-bar" id="progress-bar"></div>
+
+<main>
+  <div class="done-banner" id="done-banner">
+    <h2>✓ Rapporten är skickad!</h2>
+    <p>Bra jobbat. Verksamheten har fått sin rapport.</p>
+    <button class="btn-reset" onclick="resetGuide()">Börja om (ny revision)</button>
+  </div>
+  <div id="steps-container"></div>
+</main>
+
+<script>
+const STEPS = [
+  {
+    zone: "z-app",
+    zoneLabel: "I APPEN",
+    zoneClass: "zone-app",
+    num: 1,
+    title: "Öppna din revision i appen",
+    subtitle: "Gå till Mina revisioner",
+    body: `Öppna appen och gå till <strong>Mina revisioner</strong>. Klicka på den revision du precis genomfört för att öppna den.`,
+    action: { label: "Navigera till", btn: "Mina revisioner" },
+    tip: "Ser du inte din revision? Kontakta revisionsledaren — du kan behöva läggas till med din e-postadress."
+  },
+  {
+    zone: "z-app",
+    num: 2,
+    title: "Klicka på \"Starta frågeformulär\"",
+    subtitle: "Svarsjournalen finns här inne",
+    body: `Inne i revisionen hittar du knappen <strong>Starta frågeformulär</strong>. Klicka på den — det är här du kommer åt svarsjournalen med alla svar du lämnat in.`,
+    action: { label: "Klicka på", btn: "Starta frågeformulär" },
+    tip: null
+  },
+  {
+    zone: "z-app",
+    num: 3,
+    title: "Ladda ner / kopiera svarsjournalen",
+    subtitle: "Spara undan innehållet",
+    body: `Inne i formuläret hittar du svarsjournalen — den sammanfattning av alla dina svar. Ladda ner den, spara den eller kopiera texten. Du behöver den i nästa steg.<br><br>
+<strong>Tips att kopiera:</strong> Markera all text med <strong>Ctrl+A</strong> och kopiera med <strong>Ctrl+C</strong>.`,
+    action: null,
+    tip: "Har du filen eller texten redo? Bra — nu är det dags att öppna agenten."
+  },
+  {
+    zone: "z-app",
+    num: 4,
+    title: "Klicka på \"Generera rapport\"",
+    subtitle: "Agenten öppnas i ett nytt fönster",
+    body: `Gå tillbaka till din revision i appen och klicka på <strong>Generera rapport</strong>. Rapportagenten öppnas — håll svarsjournalen redo att klistra in.`,
+    action: { label: "Klicka på", btn: "Generera rapport" },
+    tip: null
+  },
+  {
+    zone: "z-agent",
+    zoneLabel: "I RAPPORTAGENTEN",
+    zoneClass: "zone-agent",
+    num: 5,
+    title: "Klistra in / ladda upp svarsjournalen",
+    subtitle: "Ge agenten underlaget",
+    body: `Nu är du i rapportagenten. Klistra in svarsjournalen i textrutan med <strong>Ctrl+V</strong> — eller ladda upp filen om det finns en uppladdningsknapp.<br><br>
+Agenten läser igenom svaren och skriver ett rapportutkast. Det tar vanligtvis 30–60 sekunder. <strong>Stäng inte fönstret</strong> under tiden.`,
+    action: { label: "Klistra in med", btn: "Ctrl + V" },
+    tip: "Fick du felmeddelande? Ladda om sidan och försök igen."
+  },
+  {
+    zone: "z-agent",
+    num: 6,
+    title: "Granska och redigera utkastet",
+    subtitle: "Justera text och graderingar",
+    body: `Läs igenom rapporten noggrant. Kontrollera att:<br><br>
+<strong>·</strong> Alla fynd är rätt beskrivna<br>
+<strong>·</strong> Graderingarna stämmer (avvikelse / förbättringsförslag / positiv observation)<br>
+<strong>·</strong> Språket är tydligt och professionellt<br><br>
+Redigera direkt i agenten tills du är nöjd.`,
+    action: null,
+    tip: null
+  },
+  {
+    zone: "z-agent",
+    num: 7,
+    title: "Skriv \"Godkänn\" till agenten",
+    subtitle: "Sparar rapporten till SharePoint",
+    body: `När du är klar med granskningen skriver du <strong>Godkänn</strong> i chatrutan och trycker Enter. Agenten sparar då rapporten till SharePoint och den blir tillgänglig i appen.`,
+    action: { label: "Skriv i chatrutan", btn: "Godkänn" },
+    tip: null
+  },
+  {
+    zone: "z-mail",
+    zoneLabel: "SKICKA RAPPORT",
+    zoneClass: "zone-mail",
+    num: 8,
+    title: "Hitta rapporten i appen",
+    subtitle: "\"Rapporter\" på startsidan eller via Verksamheten",
+    body: `Gå tillbaka till appen. På startsidan finns knappen <strong>Rapporter</strong> — där hittar du rapporten. Du kan också nå den via verksamhetens sida. Här kan du också göra sista justeringar om det behövs.`,
+    action: { label: "Öppna", btn: "Rapporter" },
+    tip: null
+  },
+  {
+    zone: "z-mail",
+    num: 9,
+    title: "Klicka på \"Skicka rapport\"",
+    subtitle: "Rapporten hamnar i din inkorg",
+    body: `Inne i rapporten i appen klickar du på <strong>Skicka rapport</strong>. Rapporten skickas då till din e-postinkorg som ett färdigt mail, redo att skickas vidare till verksamheten.`,
+    action: { label: "Klicka på", btn: "Skicka rapport" },
+    tip: null
+  },
+  {
+    zone: "z-mail",
+    num: 10,
+    title: "Redigera och skicka mailet",
+    subtitle: "Skicka vidare till verksamheten — klart!",
+    body: `Öppna mailet i din inkorg. Lägg gärna till en kort personlig hälsning och kontrollera att mottagarens adress är rätt. Klicka sedan på <strong>Skicka</strong> — verksamheten har nu fått sin rapport!`,
+    action: { label: "Klicka", btn: "Skicka →" },
+    tip: null
+  }
+];
+
+let currentStep = 0;
+let completedSteps = new Set();
+
+function renderProgress() {
+  const bar = document.getElementById('progress-bar');
+  bar.innerHTML = '';
+  STEPS.forEach((s, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'prog-dot' + (completedSteps.has(i) ? ' done' : '') + (i === currentStep && !completedSteps.has(i) ? ' active' : '');
+    dot.textContent = completedSteps.has(i) ? '✓' : (i + 1);
+    dot.title = s.title;
+    dot.onclick = () => { if (completedSteps.has(i) || i <= currentStep) goTo(i); };
+    bar.appendChild(dot);
+    if (i < STEPS.length - 1) {
+      const line = document.createElement('div');
+      line.className = 'prog-line' + (completedSteps.has(i) ? ' done' : '');
+      bar.appendChild(line);
+    }
+  });
+}
+
+function renderSteps() {
+  const container = document.getElementById('steps-container');
+  container.innerHTML = '';
+  let lastZone = '';
+
+  STEPS.forEach((s, i) => {
+    const isDone = completedSteps.has(i);
+    const isActive = i === currentStep;
+    if (!isDone && !isActive) return;
+
+    if (s.zoneLabel && s.zoneLabel !== lastZone) {
+      const zl = document.createElement('div');
+      zl.className = 'zone-header ' + (s.zoneClass || '');
+      zl.textContent = s.zoneLabel;
+      container.appendChild(zl);
+      lastZone = s.zoneLabel;
+    }
+
+    const card = document.createElement('div');
+    card.className = 'step-card ' + s.zone + (isDone ? ' done-card' : '');
+    card.id = 'step-' + i;
+
+    const actionHtml = s.action ? `
+      <div class="action-box">
+        <div class="alabel">${s.action.label}</div>
+        <div class="btn-sim">${s.action.btn}</div>
+      </div>` : '';
+
+    const tipHtml = s.tip ? `<div class="tip"><strong>Tips:</strong> ${s.tip}</div>` : '';
+
+    let navHtml = '';
+    if (isActive) {
+      const isLast = i === STEPS.length - 1;
+      navHtml = `<div class="nav-row">
+        ${i > 0 ? '<button class="btn-back" onclick="goBack()">← Tillbaka</button>' : ''}
+        ${isLast
+          ? '<button class="btn-done" onclick="finishGuide()">✓ Rapporten är skickad!</button>'
+          : '<button class="btn-next" onclick="nextStep()">Klart — nästa steg →</button>'
+        }
+      </div>`;
+    }
+
+    card.innerHTML = `
+      <div class="step-header">
+        <div class="step-num">${isDone ? '✓' : s.num}</div>
+        <div>
+          <div class="step-title">${s.title}</div>
+          <div class="step-subtitle">${s.subtitle}</div>
+        </div>
+      </div>
+      <div class="step-body">
+        <p>${s.body}</p>
+        ${actionHtml}
+        ${tipHtml}
+      </div>
+      ${navHtml}
+    `;
+    container.appendChild(card);
+  });
+}
+
+function goTo(i) {
+  currentStep = i;
+  renderProgress();
+  renderSteps();
+  document.getElementById('step-' + i)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function nextStep() {
+  completedSteps.add(currentStep);
+  if (currentStep < STEPS.length - 1) currentStep++;
+  renderProgress();
+  renderSteps();
+  setTimeout(() => document.getElementById('step-' + currentStep)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+}
+
+function goBack() {
+  if (currentStep > 0) {
+    completedSteps.delete(currentStep - 1);
+    currentStep--;
+    renderProgress();
+    renderSteps();
+  }
+}
+
+function finishGuide() {
+  completedSteps.add(currentStep);
+  renderProgress();
+  renderSteps();
+  document.getElementById('done-banner').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function resetGuide() {
+  currentStep = 0;
+  completedSteps = new Set();
+  document.getElementById('done-banner').style.display = 'none';
+  renderProgress();
+  renderSteps();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+renderProgress();
+renderSteps();
+</script>
+</body>
+</html>

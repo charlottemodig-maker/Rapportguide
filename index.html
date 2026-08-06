@@ -122,10 +122,10 @@ const STEPS = [
   {
     zone: "z-app",
     num: 2,
-    title: "Klicka på \"Starta frågeformulär\"",
+    title: "Klicka på \"Frågeformulär/Svarsjournal\"",
     subtitle: "Svarsjournalen finns här inne",
-    body: `Inne i revisionen hittar du knappen <strong>Starta frågeformulär</strong>. Klicka på den — det är här du kommer åt svarsjournalen med alla svar du lämnat in.`,
-    action: { label: "Klicka på", btn: "Starta frågeformulär" },
+    body: `Inne i revisionen hittar du knappen <strong>Frågeformulär/Svarsjournal</strong>. Klicka på den — det är här du kommer åt svarsjournalen med alla svar du lämnat in.`,
+    action: { label: "Klicka på", btn: "Frågeformulär/Svarsjournal" },
     tip: null
   },
   {
@@ -141,9 +141,9 @@ const STEPS = [
   {
     zone: "z-app",
     num: 4,
-    title: "Klicka på \"Revisionsagenten\"",
+    title: "Klicka på \"Rapportagenten\"",
     subtitle: "Agenten öppnas i ett nytt fönster",
-    body: `Gå tillbaka till din revision i appen och klicka på <strong>Revisionsagenten</strong>. Rapportagenten öppnas — håll svarsjournalen redo att klistra in.`,
+    body: `Gå tillbaka till din revision i appen och klicka på <strong>Rapportagenten</strong>. Rapportagenten ska öppnas i Copilot för att fungera bäst.`,
     action: { label: "Klicka på", btn: "Revisionsagenten" },
     tip: null
   },
@@ -154,8 +154,8 @@ const STEPS = [
     num: 5,
     title: "Klistra in / ladda upp svarsjournalen",
     subtitle: "Ge agenten underlaget",
-    body: `Nu är du i rapportagenten. Klistra in svarsjournalen i textrutan med <strong>Ctrl+V</strong> — eller ladda upp filen om det finns en uppladdningsknapp.<br><br>
-Agenten läser igenom svaren och skriver ett rapportutkast. Det tar vanligtvis 30–60 sekunder. <strong>Stäng inte fönstret</strong> under tiden.`,
+    body: `Nu är du i rapportagenten. Klistra in svarsjournalen i textrutan med <strong>Ctrl+V</strong> — eller ladda upp filen.<br><br>
+Välj en prompt eller promta själv tex Generera revisionsrapport med hjälp av bifogad fil. Agenten läser igenom svaren och skriver ett rapportutkast. Det tar vanligtvis 30–60 sekunder.,
     action: { label: "Klistra in med", btn: "Ctrl + V" },
     tip: "Fick du felmeddelande? Ladda om sidan och försök igen."
   },
@@ -168,7 +168,7 @@ Agenten läser igenom svaren och skriver ett rapportutkast. Det tar vanligtvis 3
 <strong>·</strong> Alla fynd är rätt beskrivna<br>
 <strong>·</strong> Graderingarna stämmer (avvikelse / förbättringsförslag / positiv observation)<br>
 <strong>·</strong> Språket är tydligt och professionellt<br><br>
-Redigera direkt i agenten tills du är nöjd.`,
+Redigera direkt med hjälp av agenten tills du är nöjd.`,
     action: null,
     tip: null
   },
@@ -195,10 +195,10 @@ Redigera direkt i agenten tills du är nöjd.`,
   {
     zone: "z-mail",
     num: 9,
-    title: "Klicka på \"Skicka rapport\"",
+    title: "Klicka på \"Klarmarkera och skicka rapport\"",
     subtitle: "Rapporten hamnar i din inkorg",
-    body: `Inne i rapporten i appen klickar du på <strong>Skicka rapport</strong>. Rapporten skickas då till din e-postinkorg som ett färdigt mail, redo att skickas vidare till verksamheten.`,
-    action: { label: "Klicka på", btn: "Skicka rapport" },
+    body: `Inne i rapporten i appen klickar du på <strong>Klarmarkera och skicka rapport</strong>. Rapporten skickas då till din e-postinkorg som ett färdigt mail, redo att skickas vidare till verksamheten.`,
+    action: { label: "Klicka på", btn: "Klarmarkera och skicka rapport" },
     tip: null
   },
   {
@@ -206,7 +206,7 @@ Redigera direkt i agenten tills du är nöjd.`,
     num: 10,
     title: "Redigera och skicka mailet",
     subtitle: "Skicka vidare till verksamheten — klart!",
-    body: `Öppna mailet i din inkorg. Lägg gärna till en kort personlig hälsning och kontrollera att mottagarens adress är rätt. Klicka sedan på <strong>Skicka</strong> — verksamheten har nu fått sin rapport!`,
+    body: `Öppna mailet i din inkorg. Lägg gärna till en kort personlig hälsning och kontrollera att mottagarens adress är rätt. <strong>Glöm inte att lägga till AC</strong> Klicka sedan på <strong>Skicka</strong> — verksamheten har nu fått sin rapport!`,
     action: { label: "Klicka", btn: "Skicka →" },
     tip: null
   }

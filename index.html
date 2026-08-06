@@ -287,3 +287,56 @@ function renderSteps() {
         <p>${s.body}</p>
         ${actionHtml}
         ${tipHtml}
+      </div>
+      ${navHtml}
+    `;
+    container.appendChild(card);
+  });
+}
+
+function goTo(i) {
+  currentStep = i;
+  renderProgress();
+  renderSteps();
+  document.getElementById('step-' + i)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function nextStep() {
+  completedSteps.add(currentStep);
+  if (currentStep < STEPS.length - 1) currentStep++;
+  renderProgress();
+  renderSteps();
+  setTimeout(() => document.getElementById('step-' + currentStep)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+}
+
+function goBack() {
+  if (currentStep > 0) {
+    completedSteps.delete(currentStep - 1);
+    currentStep--;
+    renderProgress();
+    renderSteps();
+  }
+}
+
+function finishGuide() {
+  completedSteps.add(currentStep);
+  renderProgress();
+  renderSteps();
+  document.getElementById('done-banner').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function resetGuide() {
+  currentStep = 0;
+  completedSteps = new Set();
+  document.getElementById('done-banner').style.display = 'none';
+  renderProgress();
+  renderSteps();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+renderProgress();
+renderSteps();
+</script>
+</body>
+</html>

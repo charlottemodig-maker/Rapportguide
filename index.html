@@ -56,6 +56,20 @@
   .action-box .alabel { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
   .btn-sim { font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; background: #fff; border: 1.5px solid currentColor; border-radius: 7px; padding: 8px 16px; }
 
+  .action-img img.btn-shot { display: block; max-width: 260px; border-radius: 6px; box-shadow: 0 1px 6px rgba(0,0,0,0.12); }
+
+  .type-box { background: #f8f7f5; border: 1px dashed var(--pt-border); border-radius: 8px; padding: 14px 16px; margin: 14px 0; }
+  .type-box .alabel { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; color: var(--pt-muted); }
+  .type-box .typed-text { font-family: "Courier New", monospace; font-size: 14px; font-style: italic; color: #333; background: #fff; border: 1px solid var(--pt-border); border-radius: 6px; padding: 6px 12px; display: inline-block; }
+
+  .prompt-example { background: #eef2ff; border-left: 3px solid #6366f1; border-radius: 0 6px 6px 0; padding: 10px 14px; font-size: 13px; color: #312e81; margin: 12px 0; font-style: italic; }
+
+  .popup-callout { margin: 14px 0; }
+  .popup-callout img { max-width: 220px; border-radius: 8px; box-shadow: 0 1px 6px rgba(0,0,0,0.15); display: block; margin-bottom: 10px; }
+  .choice-line { font-size: 13px; margin: 4px 0; font-weight: 600; }
+  .choice-wrong { color: #b91c1c; }
+  .choice-right { color: #15803d; }
+
   .tip { background: #fffbeb; border-left: 3px solid #f59e0b; border-radius: 0 6px 6px 0; padding: 10px 14px; font-size: 13px; color: #78350f; margin: 12px 0; }
   .tip strong { font-weight: 600; }
 
@@ -113,19 +127,19 @@ const STEPS = [
     zoneLabel: "I APPEN",
     zoneClass: "zone-app",
     num: 1,
-    title: "Öppna din revision i appen",
+    title: "Öppna Mina revisioner",
     subtitle: "Gå till Mina revisioner",
     body: `Öppna appen och gå till <strong>Mina revisioner</strong>. Klicka på den revision du precis genomfört för att öppna den.`,
-    action: { label: "Navigera till", btn: "Mina revisioner" },
+    action: { kind: "image", label: "Klicka på", image: "img/mina-revisioner.png", alt: "Mina revisioner" },
     tip: "Ser du inte din revision? Kontakta revisionsledaren — du kan behöva läggas till med din e-postadress."
   },
   {
     zone: "z-app",
     num: 2,
-    title: "Klicka på \"Starta frågeformulär\"",
+    title: "Öppna Frågeformulär/Svarsjournal",
     subtitle: "Svarsjournalen finns här inne",
-    body: `Inne i revisionen hittar du knappen <strong>Starta frågeformulär</strong>. Klicka på den — det är här du kommer åt svarsjournalen med alla svar du lämnat in.`,
-    action: { label: "Klicka på", btn: "Starta frågeformulär" },
+    body: `Inne i revisionen hittar du knappen <strong>Frågeformulär/Svarsjournal</strong>. Klicka på den — det är här du kommer åt svarsjournalen med alla svar du lämnat in.`,
+    action: { kind: "image", label: "Klicka på", image: "img/frageformular-svarsjournal.png", alt: "Frågeformulär/Svarsjournal" },
     tip: null
   },
   {
@@ -136,31 +150,32 @@ const STEPS = [
     body: `Inne i formuläret hittar du svarsjournalen — den sammanfattning av alla dina svar. Ladda ner den, spara den eller kopiera texten. Du behöver den i nästa steg.<br><br>
 <strong>Tips att kopiera:</strong> Markera all text med <strong>Ctrl+A</strong> och kopiera med <strong>Ctrl+C</strong>.`,
     action: null,
-    tip: "Har du filen eller texten redo? Bra — nu är det dags att öppna agenten."
+    tip: "Har du filen eller texten redo? Bra — nu är det dags att öppna Rapportagenten."
   },
   {
     zone: "z-app",
     num: 4,
-    title: "Klicka på \"Generera rapport\"",
-    title: "Klicka på \"Revisionsagenten\"",
-    subtitle: "Agenten öppnas i ett nytt fönster",
-    body: `Gå tillbaka till din revision i appen och klicka på <strong>Generera rapport</strong>. Rapportagenten öppnas — håll svarsjournalen redo att klistra in.`,
-    action: { label: "Klicka på", btn: "Generera rapport" },
-    body: `Gå tillbaka till din revision i appen och klicka på <strong>Revisionsagenten</strong>. Rapportagenten öppnas — håll svarsjournalen redo att klistra in.`,
-    action: { label: "Klicka på", btn: "Revisionsagenten" },
-    tip: null
+    title: "Klicka på Rapportagenten",
+    subtitle: "Måste öppnas i Copilot",
+    body: `Gå tillbaka till din revision i appen och klicka på <strong>Rapportagenten</strong>. Håll svarsjournalen redo att klistra in eller ladda upp.<br><br>
+Ett fönster med två val dyker upp: <strong>"Öppna"</strong> och <strong>"Öppna med Copilot"</strong>.<br><br>
+<strong>⚠️ Viktigt:</strong> Klicka INTE på "Öppna" — klicka på <strong>"Öppna med Copilot"</strong>. Rapportagenten fungerar bara om den öppnas i Copilot.`,
+    action: { kind: "image", label: "Klicka på", image: "img/rapportagenten.png", alt: "Rapportagenten" },
+    popup: { image: "img/oppna-med-copilot-popup.png", alt: "Valfönster: Öppna eller Öppna med Copilot" },
+    tip: "Osäker på om du är i Copilot? Kolla att fönstret/fliken faktiskt visar Copilot högst upp innan du klistrar in svarsjournalen."
   },
   {
     zone: "z-agent",
     zoneLabel: "I RAPPORTAGENTEN",
     zoneClass: "zone-agent",
     num: 5,
-    title: "Klistra in / ladda upp svarsjournalen",
+    title: "Klistra in eller ladda upp svarsjournalen",
     subtitle: "Ge agenten underlaget",
-    body: `Nu är du i rapportagenten. Klistra in svarsjournalen i textrutan med <strong>Ctrl+V</strong> — eller ladda upp filen om det finns en uppladdningsknapp.<br><br>
-Agenten läser igenom svaren och skriver ett rapportutkast. Det tar vanligtvis 30–60 sekunder. <strong>Stäng inte fönstret</strong> under tiden.`,
+    body: `Nu är du i Rapportagenten. Klistra in svarsjournalen i textrutan med <strong>Ctrl+V</strong> — eller ladda upp filen med uppladdningsknappen.<br><br>
+Skriv sedan en instruktion till agenten, till exempel:`,
     action: { label: "Klistra in med", btn: "Ctrl + V" },
-    tip: "Fick du felmeddelande? Ladda om sidan och försök igen."
+    promptExample: "Skapa en revisionsrapport av den uppladdade/inklistrade filen.",
+    tip: "Agenten läser igenom svaren och skriver ett rapportutkast. Det tar vanligtvis 30–60 sekunder. Stäng inte fönstret under tiden."
   },
   {
     zone: "z-agent",
@@ -171,17 +186,17 @@ Agenten läser igenom svaren och skriver ett rapportutkast. Det tar vanligtvis 3
 <strong>·</strong> Alla fynd är rätt beskrivna<br>
 <strong>·</strong> Graderingarna stämmer (avvikelse / förbättringsförslag / positiv observation)<br>
 <strong>·</strong> Språket är tydligt och professionellt<br><br>
-Redigera direkt i agenten tills du är nöjd.`,
+Redigera direkt med hjälp av agenten tills du är nöjd.`,
     action: null,
     tip: null
   },
   {
     zone: "z-agent",
     num: 7,
-    title: "Skriv \"Godkänn\" till agenten",
+    title: "Skriv \"Godkänn\" i chatrutan",
     subtitle: "Sparar rapporten till SharePoint",
-    body: `När du är klar med granskningen skriver du <strong>Godkänn</strong> i chatrutan och trycker Enter. Agenten sparar då rapporten till SharePoint och den blir tillgänglig i appen.`,
-    action: { label: "Skriv i chatrutan", btn: "Godkänn" },
+    body: `När du är klar med granskningen skriver du <strong>Godkänn</strong> i chatrutan till agenten och trycker Enter. Agenten sparar då rapporten till SharePoint och den blir tillgänglig i appen.`,
+    action: { kind: "type", label: "Skriv i chatrutan", text: "Godkänn" },
     tip: null
   },
   {
@@ -189,19 +204,19 @@ Redigera direkt i agenten tills du är nöjd.`,
     zoneLabel: "SKICKA RAPPORT",
     zoneClass: "zone-mail",
     num: 8,
-    title: "Hitta rapporten i appen",
-    subtitle: "\"Rapporter\" på startsidan eller via Verksamheten",
-    body: `Gå tillbaka till appen. På startsidan finns knappen <strong>Rapporter</strong> — där hittar du rapporten. Du kan också nå den via verksamhetens sida. Här kan du också göra sista justeringar om det behövs.`,
-    action: { label: "Öppna", btn: "Rapporter" },
+    title: "Klicka på Rapport-knappen",
+    subtitle: "Rapporten finns på Verksamhetens sida",
+    body: `Gå tillbaka till appen och Verksamhetens sida. Klicka på knappen <strong>Rapport</strong>. Du kan också redigera i rapporten här om du behöver.`,
+    action: { kind: "image", label: "Klicka på", image: "img/rapport.png", alt: "Rapport" },
     tip: null
   },
   {
     zone: "z-mail",
     num: 9,
-    title: "Klicka på \"Skicka rapport\"",
+    title: "Klicka på \"Klarmarkera och skicka rapport\"",
     subtitle: "Rapporten hamnar i din inkorg",
-    body: `Inne i rapporten i appen klickar du på <strong>Skicka rapport</strong>. Rapporten skickas då till din e-postinkorg som ett färdigt mail, redo att skickas vidare till verksamheten.`,
-    action: { label: "Klicka på", btn: "Skicka rapport" },
+    body: `På fliken <strong>Rapport</strong> hittar du knappen <strong>Klarmarkera och skicka rapport</strong>. Klicka på den när du är redo att skicka till verksamheten. Rapporten skickas då till din e-postinkorg som ett färdigt mail.`,
+    action: { label: "Klicka på", btn: "Klarmarkera och skicka rapport" },
     tip: null
   },
   {
@@ -209,14 +224,52 @@ Redigera direkt i agenten tills du är nöjd.`,
     num: 10,
     title: "Redigera och skicka mailet",
     subtitle: "Skicka vidare till verksamheten — klart!",
-    body: `Öppna mailet i din inkorg. Lägg gärna till en kort personlig hälsning och kontrollera att mottagarens adress är rätt. Klicka sedan på <strong>Skicka</strong> — verksamheten har nu fått sin rapport!`,
+    body: `Öppna mailet i din inkorg. Kontrollera att mottagarens adress är rätt — lägg sedan till <strong>AC</strong> som mottagare. Lägg gärna till en kort personlig hälsning. Klicka sedan på <strong>Skicka</strong> — verksamheten har nu fått sin rapport!`,
     action: { label: "Klicka", btn: "Skicka →" },
-    tip: null
+    tip: "Glöm inte AC! Rapporten ska alltid gå till både verksamheten och AC — inte bara verksamheten."
   }
 ];
 
 let currentStep = 0;
 let completedSteps = new Set();
+
+function renderActionHtml(action) {
+  if (!action) return '';
+  if (action.kind === 'image') {
+    return `
+      <div class="action-box action-img">
+        <div class="alabel">${action.label}</div>
+        <img class="btn-shot" src="${action.image}" alt="${action.alt || ''}">
+      </div>`;
+  }
+  if (action.kind === 'type') {
+    return `
+      <div class="type-box">
+        <div class="alabel">${action.label}</div>
+        <span class="typed-text">"${action.text}"</span>
+      </div>`;
+  }
+  return `
+    <div class="action-box">
+      <div class="alabel">${action.label}</div>
+      <div class="btn-sim">${action.btn}</div>
+    </div>`;
+}
+
+function renderPromptHtml(s) {
+  if (!s.promptExample) return '';
+  return `<div class="prompt-example"><strong>Exempel på prompt:</strong> ${s.promptExample}</div>`;
+}
+
+function renderPopupHtml(s) {
+  if (!s.popup) return '';
+  return `
+    <div class="popup-callout">
+      <img src="${s.popup.image}" alt="${s.popup.alt || ''}">
+      <div class="choice-line choice-wrong">❌ Klicka INTE på "Öppna"</div>
+      <div class="choice-line choice-right">✅ Klicka på "Öppna med Copilot"</div>
+    </div>`;
+}
 
 function renderProgress() {
   const bar = document.getElementById('progress-bar');
@@ -258,12 +311,9 @@ function renderSteps() {
     card.className = 'step-card ' + s.zone + (isDone ? ' done-card' : '');
     card.id = 'step-' + i;
 
-    const actionHtml = s.action ? `
-      <div class="action-box">
-        <div class="alabel">${s.action.label}</div>
-        <div class="btn-sim">${s.action.btn}</div>
-      </div>` : '';
-
+    const actionHtml = renderActionHtml(s.action);
+    const popupHtml = renderPopupHtml(s);
+    const promptHtml = renderPromptHtml(s);
     const tipHtml = s.tip ? `<div class="tip"><strong>Tips:</strong> ${s.tip}</div>` : '';
 
     let navHtml = '';
@@ -289,6 +339,8 @@ function renderSteps() {
       <div class="step-body">
         <p>${s.body}</p>
         ${actionHtml}
+        ${popupHtml}
+        ${promptHtml}
         ${tipHtml}
       </div>
       ${navHtml}
